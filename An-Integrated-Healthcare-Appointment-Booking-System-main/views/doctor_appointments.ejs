@@ -1,0 +1,116 @@
+<%- include('partials/header', { activePage: 'doctor-appointments' }) %>
+
+<h2 class="section-title mb-3">My Appointments</h2>
+
+<form method="GET" class="row g-2 g-md-3 align-items-end mb-3">
+  <div class="col-md-4">
+    <label class="form-label small">Search patient</label>
+    <input
+      type="text"
+      name="q"
+      value="<%= (filters && filters.q) || '' %>"
+      class="form-control form-control-sm rounded-3"
+      placeholder="Name or email"
+    />
+  </div>
+  <div class="col-md-2">
+    <label class="form-label small">Status</label>
+    <select name="status" class="form-select form-select-sm rounded-3">
+      <option value="">All</option>
+      <option value="pending"   <%= filters && filters.status==='pending'   ? 'selected' : '' %>>Pending</option>
+      <option value="confirmed" <%= filters && filters.status==='confirmed' ? 'selected' : '' %>>Confirmed</option>
+      <option value="cancelled" <%= filters && filters.status==='cancelled' ? 'selected' : '' %>>Cancelled</option>
+      <option value="completed" <%= filters && filters.status==='completed' ? 'selected' : '' %>>Completed</option>
+    </select>
+  </div>
+  <div class="col-md-2">
+    <label class="form-label small">From</label>
+    <input
+      type="date"
+      name="date_from"
+      value="<%= (filters && filters.date_from) || '' %>"
+      class="form-control form-control-sm rounded-3"
+    />
+  </div>
+  <div class="col-md-2">
+    <label class="form-label small">To</label>
+    <input
+      type="date"
+      name="date_to"
+      value="<%= (filters && filters.date_to) || '' %>"
+      class="form-control form-control-sm rounded-3"
+    />
+  </div>
+  <div class="col-md-2 d-grid">
+    <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill">
+      Filter
+    </button>
+  </div>
+</form>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover app-table mb-0">
+        <thead>
+          <tr>
+            <th>Patient</th>
+            <th>Email</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Notes</th>
+            <th>Status</th>
+            <th class="text-end">Change Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (!appointments.length) { %>
+          <tr>
+            <td colspan="7" class="text-center py-4 text-muted">No appointments found.</td>
+          </tr>
+          <% } %>
+
+          <% appointments.forEach(function(a) { %>
+          <tr>
+            <td class="small"><%= a.user_name %></td>
+            <td class="small text-muted"><%= a.user_email %></td>
+            <td class="small"><%= formatDate(a.appointment_date) %></td>
+            <td class="small"><%= formatTime(a.appointment_time) %></td>
+            <td class="small">
+              <% if (a.doctor_notes || a.prescription) { %>
+                <span class="badge bg-success-subtle text-success border border-success-subtle">
+                  <i class="bi bi-file-earmark-text me-1"></i>Added
+                </span>
+              <% } else { %>
+                <span class="badge bg-secondary-subtle text-muted border border-secondary-subtle">
+                  <i class="bi bi-file-earmark me-1"></i>None
+                </span>
+              <% } %>
+              <a href="/doctor/appointments/<%= a.id %>/notes" class="btn btn-link btn-sm p-0 ms-1">
+                Edit
+              </a>
+            </td>
+            <td class="small"><%= a.status %></td>
+            <td class="text-end">
+              <form class="d-inline-flex align-items-center gap-2"
+                    method="POST" action="/doctor/appointments/<%= a.id %>/status">
+                <select name="status" class="form-select form-select-sm rounded-pill">
+                  <option value="pending"   <%= a.status === 'pending'   ? 'selected' : '' %>>pending</option>
+                  <option value="confirmed" <%= a.status === 'confirmed' ? 'selected' : '' %>>confirmed</option>
+                  <option value="cancelled" <%= a.status === 'cancelled' ? 'selected' : '' %>>cancelled</option>
+                  <option value="completed" <%= a.status === 'completed' ? 'selected' : '' %>>completed</option>
+                </select>
+                <button type="submit" class="btn btn-sm btn-outline-primary rounded-pill">
+                  Update
+                </button>
+              </form>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

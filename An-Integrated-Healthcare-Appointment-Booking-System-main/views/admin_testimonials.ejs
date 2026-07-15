@@ -1,0 +1,78 @@
+<%- include('partials/header', { activePage: 'admin-testimonials' }) %>
+
+<h2 class="section-title mb-3">Manage Testimonials</h2>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover app-table mb-0">
+        <thead>
+          <tr>
+            <th>Patient</th>
+            <th>Email</th>
+            <th>Rating</th>
+            <th>Message</th>
+            <th>Date</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (!testimonials.length) { %>
+            <tr>
+              <td colspan="6" class="text-center py-4 text-muted small">
+                No testimonials found.
+              </td>
+            </tr>
+          <% } %>
+          <% testimonials.forEach(function(t) { %>
+            <tr>
+              <td class="small fw-semibold"><%= t.name %></td>
+              <td class="small text-muted"><%= t.user_email || '-' %></td>
+              <td class="small">
+                <% for (let i = 1; i <= 5; i++) { %>
+                  <% if (i <= t.rating) { %>
+                    <i class="bi bi-star-fill text-warning"></i>
+                  <% } else { %>
+                    <i class="bi bi-star text-warning"></i>
+                  <% } %>
+                <% } %>
+              </td>
+              <td class="small" style="max-width: 320px;">
+                <%= t.message %>
+              </td>
+              <td class="small">
+                <%= t.created_at.toISOString().slice(0,10) %>
+              </td>
+              <td class="text-end small">
+                <form method="POST" action="/admin/testimonials/<%= t.id %>/status" class="d-inline">
+                  <% if (t.is_approved) { %>
+                    <input type="hidden" name="action" value="hide" />
+                    <button type="submit" class="btn btn-sm btn-outline-secondary rounded-pill">
+                      Hide
+                    </button>
+                  <% } else { %>
+                    <input type="hidden" name="action" value="approve" />
+                    <button type="submit" class="btn btn-sm btn-outline-success rounded-pill">
+                      Approve
+                    </button>
+                  <% } %>
+                </form>
+                <form method="POST"
+                      action="/admin/testimonials/<%= t.id %>/status"
+                      class="d-inline"
+                      onsubmit="return confirm('Delete this testimonial?');">
+                  <input type="hidden" name="action" value="delete" />
+                  <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill ms-1">
+                    Delete
+                  </button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

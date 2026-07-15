@@ -1,0 +1,5 @@
+USE clinic_app;
+
+UPDATE users
+SET role = 'admin'
+WHERE email = 'tumhara-email@example.com';

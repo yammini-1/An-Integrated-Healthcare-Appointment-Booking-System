@@ -1,0 +1,155 @@
+<%- include('partials/header', { activePage: 'admin-doctors' }) %>
+
+<h2 class="section-title mb-3"><%= doctor ? 'Edit Doctor' : 'Add Doctor' %></h2>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-4">
+    <form method="POST" action="<%= formAction %>" enctype="multipart/form-data">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label small">Name</label>
+          <input
+            type="text"
+            name="name"
+            class="form-control rounded-3"
+            value="<%= doctor ? doctor.name : '' %>"
+            required
+          />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label small">Specialty</label>
+          <select name="specialty_id" class="form-select rounded-3" required>
+            <% specialties.forEach(function(s) { %>
+            <option value="<%= s.id %>"
+              <%= doctor && doctor.specialty_id === s.id ? 'selected' : '' %>>
+              <%= s.name %>
+            </option>
+            <% }) %>
+          </select>
+        </div>
+
+        <!-- Login email -->
+        <div class="col-md-6">
+          <label class="form-label small">Doctor Login Email</label>
+          <input
+            type="email"
+            name="doctor_email"
+            class="form-control rounded-3"
+            placeholder="doctor@example.com"
+            value="<%= doctor && doctor.email ? doctor.email : '' %>"
+          />
+          <small class="text-muted">Used for doctor portal login (optional).</small>
+        </div>
+
+        <!-- Login password (only set / reset) -->
+        <div class="col-md-6">
+          <label class="form-label small">Doctor Login Password</label>
+          <input
+            type="password"
+            name="doctor_password"
+            class="form-control rounded-3"
+            placeholder="<%= doctor ? 'Leave blank to keep existing password' : 'Set initial password' %>"
+          />
+        </div>
+
+        <!-- Active toggle -->
+        <div class="col-md-6">
+          <label class="form-label small">Portal Access</label>
+          <div class="form-check form-switch">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              name="is_active"
+              value="1"
+              id="isActiveSwitch"
+              <%= !doctor || doctor.is_active ? 'checked' : '' %>
+            >
+            <label class="form-check-label small" for="isActiveSwitch">
+              Active (doctor can log in)
+            </label>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label small">Profile Photo</label>
+          <input
+            type="file"
+            name="photo"
+            accept="image/*"
+            class="form-control rounded-3"
+          />
+          <% if (doctor && doctor.photo) { %>
+            <div class="mt-2 small text-muted d-flex align-items-center">
+              Current:
+              <img src="/uploads/doctors/<%= doctor.photo %>" alt="<%= doctor.name %>"
+                   class="avatar-circle avatar-img ms-2">
+            </div>
+          <% } %>
+          <input type="hidden" name="existing_photo" value="<%= doctor ? doctor.photo : '' %>">
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label small">Bio</label>
+          <textarea
+            name="bio"
+            class="form-control rounded-3"
+            rows="4"
+          ><%= doctor ? doctor.bio : '' %></textarea>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label small">Experience (years)</label>
+          <input
+            type="number"
+            name="experience_years"
+            class="form-control rounded-3"
+            min="0"
+            value="<%= doctor ? doctor.experience_years : '' %>"
+          />
+        </div>
+        <div class="col-md-4">
+          <label class="form-label small">Consultation Fee</label>
+          <input
+            type="number"
+            name="fee"
+            class="form-control rounded-3"
+            step="0.01"
+            min="0"
+            value="<%= doctor ? doctor.fee : '' %>"
+          />
+        </div>
+        <div class="col-md-2">
+          <label class="form-label small">Available From</label>
+          <input
+            type="time"
+            name="available_from"
+            class="form-control rounded-3"
+            value="<%= doctor ? doctor.available_from.toString().slice(0,5) : '' %>"
+            required
+          />
+        </div>
+        <div class="col-md-2">
+          <label class="form-label small">Available To</label>
+          <input
+            type="time"
+            name="available_to"
+            class="form-control rounded-3"
+            value="<%= doctor ? doctor.available_to.toString().slice(0,5) : '' %>"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="mt-4 d-flex gap-2">
+        <button type="submit" class="btn btn-primary rounded-pill">
+          <%= doctor ? 'Update Doctor' : 'Create Doctor' %>
+        </button>
+        <a href="/admin/doctors" class="btn btn-outline-secondary rounded-pill">
+          Cancel
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

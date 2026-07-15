@@ -1,0 +1,58 @@
+<%- include('partials/header', { activePage: 'admin-patients' }) %>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h2 class="section-title mb-1">Patients</h2>
+    <p class="small text-muted mb-0">View and manage all registered patients.</p>
+  </div>
+  <a href="/admin/patients/export" class="btn btn-sm btn-outline-success rounded-pill">
+    <i class="bi bi-file-earmark-spreadsheet me-1"></i> Export CSV
+  </a>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover app-table mb-0">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Registered On</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (!patients.length) { %>
+          <tr>
+            <td colspan="5" class="text-center py-4 text-muted small">
+              No patients found.
+            </td>
+          </tr>
+          <% } %>
+          <% patients.forEach(function(p) { %>
+          <tr>
+            <td class="small"><%= p.id %></td>
+            <td class="small"><%= p.name %></td>
+            <td class="small text-muted"><%= p.email %></td>
+            <td class="small"><%= p.created_at.toISOString().slice(0,10) %></td>
+            <td class="text-end">
+              <form method="POST"
+                    action="/admin/patients/<%= p.id %>/delete"
+                    class="d-inline"
+                    onsubmit="return confirm('Delete this patient and all their appointments?');">
+                <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill">
+                  Delete
+                </button>
+              </form>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

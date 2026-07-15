@@ -1,0 +1,398 @@
+:root {
+  --app-bg: #f3f4f6;
+  --app-text: #111827;
+  --app-muted: #6b7280;
+  --app-primary: #2563eb;
+  --app-primary-dark: #1d4ed8;
+
+  --card-bg: #ffffff;
+  --navbar-bg: linear-gradient(90deg, #2563eb, #1d4ed8);
+  --footer-bg: #ffffff;
+  --table-head-bg: #f9fafb;
+  --border-subtle: #e5e7eb;
+}
+
+.theme-dark {
+  /* Background ab bhi dark rahega, but thoda soft */
+  --app-bg: #54565e;      /* page background */
+  --card-bg: #f3f3f3;     /* cards thode lighter navy */
+  --footer-bg: #757272;
+  --table-head-bg: #5c5c5f;
+  --border-subtle: #626872;
+
+  --app-text: #ebe6e5;    /* text halka grey white */
+  --app-muted: #cdd2da;
+  --app-primary: #3b82f6;
+  --app-primary-dark: #1d4ed8;
+
+  --navbar-bg: linear-gradient(90deg, #000000, #000102);
+}
+
+/* dark mode me hero card bhi pure black na ho, halka gradient rakhenge */
+.theme-dark .hero-card {
+  background: radial-gradient(circle at top left, #0b1120, #020617);
+}
+
+/* shadows ko thoda kam kia */
+.theme-dark .card,
+.theme-dark .auth-card,
+.theme-dark .stats-card {
+  box-shadow: 0 10px 24px rgba(187, 177, 177, 0.5);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.app-body {
+  min-height: 100vh;
+  background-color: var(--app-bg);
+  color: var(--app-text);
+  display: flex;
+  flex-direction: column;
+}
+
+/* main content stretch karega, footer ko niche dhakel dega */
+.app-main {
+  flex: 1 0 auto;
+}
+
+.app-footer {
+  flex-shrink: 0;
+  background-color: var(--footer-bg);
+}
+
+/* NAVBAR */
+
+.app-navbar {
+  background: var(--navbar-bg);
+}
+
+.app-navbar .navbar-brand .brand-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background-color: rgba(184, 33, 33, 0.12);
+  font-size: 1.1rem;
+}
+
+.navbar-nav .nav-link {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.navbar-nav .nav-link.active {
+  opacity: 1;
+  font-weight: 600;
+}
+
+.theme-toggle-btn {
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* HERO */
+
+.hero-card {
+  border-radius: 1.5rem;
+  background: radial-gradient(circle at top left, #eff6ff, #eef2ff);
+  overflow: hidden;
+}
+
+.theme-dark .hero-card {
+  background: radial-gradient(circle at top left, #0b1120, #020617);
+}
+
+.hero-title {
+  font-size: clamp(1.9rem, 2.6vw, 2.6rem);
+  font-weight: 700;
+}
+
+.hero-subtitle {
+  font-size: 0.95rem;
+  color: var(--app-muted);
+}
+
+.hero-search {
+  border-radius: 1rem;
+  background-color: var(--card-bg);
+}
+
+.hero-visual {
+  position: relative;
+  min-height: 260px;
+}
+
+.hero-blob {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.18), transparent 60%),
+    radial-gradient(circle at bottom left, rgba(16, 185, 129, 0.16), transparent 70%);
+}
+
+.hero-card-main {
+  position: relative;
+  max-width: 320px;
+  border-radius: 1.25rem;
+  background-color: var(--card-bg);
+  margin-left: auto;
+  margin-right: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.hero-pills {
+  position: absolute;
+  bottom: 1.2rem;
+  left: 0;
+  border-radius: 999px;
+  background-color: var(--card-bg);
+}
+
+/* AVATARS */
+
+.avatar-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.avatar-circle.avatar-lg {
+  width: 56px;
+  height: 56px;
+  font-size: 1.25rem;
+}
+
+.avatar-circle.avatar-xs {
+  width: 28px;
+  height: 28px;
+  font-size: 0.75rem;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  object-fit: cover;
+}
+
+.avatar-wrapper {
+  display: inline-flex;
+}
+
+/* SECTION TITLES */
+
+.section-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+/* SPECIALTY PILL */
+
+.specialty-pill {
+  border-radius: 0.9rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-subtle);
+}
+
+.specialty-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.1);
+}
+
+.specialty-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background-color: #eef2ff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #4f46e5;
+  font-size: 0.9rem;
+}
+
+/* CARDS */
+
+.card,
+.auth-card,
+.stats-card {
+  background-color: var(--card-bg);
+  border-radius: 1rem;
+}
+
+.card-doctor {
+  border-radius: 1rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card-doctor:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 35px rgba(15, 23, 42, 0.12);
+}
+
+/* STEPS */
+
+.step-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+/* AUTH CARD */
+
+.auth-card {
+  border-radius: 1.25rem;
+}
+
+/* TABLES */
+
+.app-table thead th {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--app-muted);
+  background-color: var(--table-head-bg);
+  border-bottom-color: var(--border-subtle);
+}
+
+.app-table tbody td {
+  font-size: 0.85rem;
+  vertical-align: middle;
+}
+
+/* STATUS BADGES */
+
+.status-badge {
+  font-size: 0.74rem;
+  border-radius: 999px;
+  padding: 0.2rem 0.75rem;
+  text-transform: capitalize;
+}
+
+.status-badge-pending {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.status-badge-confirmed {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.status-badge-cancelled {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.status-badge-completed {
+  background-color: #e0f2fe;
+  color: #075985;
+}
+
+/* STATS CARDS (ADMIN) */
+
+.stats-card {
+  border-radius: 1rem;
+}
+
+.stats-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+/* ALERT */
+
+.app-alert {
+  border-radius: 0.75rem;
+}
+
+/* FOOTER */
+
+.app-footer {
+  background-color: var(--footer-bg);
+}
+
+/* UTILS */
+
+.tracking-wide {
+  letter-spacing: 0.08em;
+}
+
+/* DARK MODE SPECIFIC TWEAKS */
+
+.theme-dark .card,
+.theme-dark .auth-card,
+.theme-dark .stats-card {
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+}
+
+.theme-dark .specialty-icon {
+  background-color: #111827;
+  color: #a5b4fc;
+}
+
+.theme-dark .app-table tbody tr {
+  border-color: #1f2933;
+}
+
+.favorite-btn {
+  cursor: pointer;
+}
+
+.favorite-btn .bi-heart {
+  color: #9ca3af;
+}
+
+.favorite-btn .bi-heart-fill {
+  color: #ef4444;
+}
+
+@media print {
+  .app-navbar,
+  .app-footer,
+  .app-alert,
+  .no-print {
+    display: none !important;
+  }
+
+  body,
+  .app-body {
+    background-color: #ffffff !important;
+  }
+
+  .app-main {
+    padding-top: 0 !important;
+  }
+
+  .print-card {
+    box-shadow: none !important;
+    border: 1px solid #e5e7eb;
+  }
+}
+
+.btn-check:checked + .btn-outline-primary {
+  background-color: var(--app-primary);
+  border-color: var(--app-primary);
+  color: #ffffff;
+}

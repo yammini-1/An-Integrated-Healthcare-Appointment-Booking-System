@@ -1,0 +1,99 @@
+<%- include('partials/header', { activePage: 'admin-specialties' }) %>
+
+<h2 class="section-title mb-3">Specialties</h2>
+<p class="small text-muted mb-3">
+  Manage available medical specialties. New specialties will appear in the doctor form.
+</p>
+
+<div class="row g-3 mb-3">
+  <div class="col-md-5">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+        <h6 class="fw-semibold mb-2">Add New Specialty</h6>
+        <form method="POST" action="/admin/specialties/new">
+          <div class="mb-2">
+            <label class="form-label small">Name</label>
+            <input
+              type="text"
+              name="name"
+              class="form-control form-control-sm rounded-3"
+              placeholder="e.g. Endocrinologist"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm rounded-pill mt-2">
+            Add Specialty
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-7">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+        <h6 class="fw-semibold mb-2">Existing Specialties</h6>
+        <div class="table-responsive">
+          <table class="table table-sm mb-0">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Doctors</th>
+                <th class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (!specialties.length) { %>
+              <tr>
+                <td colspan="3" class="small text-muted text-center py-2">
+                  No specialties found.
+                </td>
+              </tr>
+              <% } %>
+              <% specialties.forEach(function(s) { %>
+              <tr>
+                <td class="small">
+                  <form method="POST" action="/admin/specialties/<%= s.id %>/edit" class="d-inline-flex w-100 gap-1">
+                    <input
+                      type="text"
+                      name="name"
+                      value="<%= s.name %>"
+                      class="form-control form-control-sm rounded-3"
+                      required
+                    />
+                    <button type="submit" class="btn btn-sm btn-outline-primary rounded-pill">
+                      Save
+                    </button>
+                  </form>
+                </td>
+                <td class="small text-muted">
+                  <%= s.doctor_count %>
+                </td>
+                <td class="text-end small">
+                  <% if (s.doctor_count == 0) { %>
+                  <form method="POST"
+                        action="/admin/specialties/<%= s.id %>/delete"
+                        class="d-inline"
+                        onsubmit="return confirm('Delete this specialty?');">
+                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill">
+                      Delete
+                    </button>
+                  </form>
+                  <% } else { %>
+                  <span class="text-muted">In use</span>
+                  <% } %>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+        <p class="small text-muted mt-2 mb-0">
+          Specialties that are used by doctors cannot be deleted.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,59 @@
+<%- include('partials/header', { activePage: 'admin-appointments' }) %>
+
+<h2 class="section-title mb-3">Appointment Detail</h2>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-4">
+    <div class="row mb-3 small">
+      <div class="col-md-4">
+        <h6 class="fw-semibold">Patient</h6>
+        <div><strong><%= appt.user_name %></strong></div>
+        <div class="text-muted"><%= appt.user_email %></div>
+      </div>
+      <div class="col-md-4">
+        <h6 class="fw-semibold">Doctor</h6>
+        <div><strong><%= appt.doctor_name %></strong></div>
+        <div class="text-muted"><%= appt.specialty_name %></div>
+      </div>
+      <div class="col-md-4">
+        <h6 class="fw-semibold">Appointment</h6>
+        <div>Date: <strong><%= formatDate(appt.appointment_date) %></strong></div>
+        <div>Time: <strong><%= formatTime(appt.appointment_time) %></strong></div>
+        <div>Status: <strong><%= appt.status %></strong></div>
+      </div>
+    </div>
+
+    <form method="POST" action="/admin/appointments/<%= appt.id %>/notes">
+      <div class="mb-3">
+        <label class="form-label small">Doctor Notes</label>
+        <textarea
+          name="doctor_notes"
+          class="form-control rounded-3"
+          rows="4"
+          placeholder="Symptoms, findings, diagnosis, advice, etc."
+        ><%= appt.doctor_notes || '' %></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label small">Prescription</label>
+        <textarea
+          name="prescription"
+          class="form-control rounded-3"
+          rows="4"
+          placeholder="Medicine name, dosage, frequency, duration..."
+        ><%= appt.prescription || '' %></textarea>
+      </div>
+
+      <div class="d-flex flex-wrap gap-2 mt-3">
+        <button type="submit" class="btn btn-primary rounded-pill">
+          Save
+        </button>
+        <a href="/admin/appointments" class="btn btn-outline-secondary rounded-pill">
+          Back to All Appointments
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

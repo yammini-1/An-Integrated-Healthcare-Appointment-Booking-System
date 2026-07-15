@@ -1,0 +1,123 @@
+<%- include('partials/header', { activePage: 'my-appointments' }) %>
+
+<h2 class="section-title mb-1">My Appointments</h2>
+<p class="small text-muted mb-3">
+  Track all your upcoming and past appointments in one place.
+</p>
+
+<form method="GET" class="row g-2 g-md-3 align-items-end mb-3">
+  <div class="col-md-4">
+    <label class="form-label small">Search</label>
+    <input
+      type="text"
+      name="q"
+      value="<%= (filters && filters.q) || '' %>"
+      class="form-control form-control-sm rounded-3"
+      placeholder="Doctor or specialty"
+    />
+  </div>
+  <div class="col-md-2">
+    <label class="form-label small">Status</label>
+    <select name="status" class="form-select form-select-sm rounded-3">
+      <option value="">All</option>
+      <option value="pending" <%= filters && filters.status==='pending'?'selected':'' %>>Pending</option>
+      <option value="confirmed" <%= filters && filters.status==='confirmed'?'selected':'' %>>Confirmed</option>
+      <option value="cancelled" <%= filters && filters.status==='cancelled'?'selected':'' %>>Cancelled</option>
+      <option value="completed" <%= filters && filters.status==='completed'?'selected':'' %>>Completed</option>
+    </select>
+  </div>
+  <div class="col-md-2">
+    <label class="form-label small">From</label>
+    <input
+      type="date"
+      name="date_from"
+      value="<%= (filters && filters.date_from) || '' %>"
+      class="form-control form-control-sm rounded-3"
+    />
+  </div>
+  <div class="col-md-2">
+    <label class="form-label small">To</label>
+    <input
+      type="date"
+      name="date_to"
+      value="<%= (filters && filters.date_to) || '' %>"
+      class="form-control form-control-sm rounded-3"
+    />
+  </div>
+  <div class="col-md-2 d-grid">
+    <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill">
+      Filter
+    </button>
+  </div>
+</form>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover app-table mb-0">
+        <thead>
+          <tr>
+            <th>Doctor</th>
+            <th>Specialty</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Status</th>
+            <th class="text-end">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (!appointments.length) { %>
+          <tr>
+            <td colspan="6" class="text-center py-4 text-muted">
+              You don't have any appointments yet.
+            </td>
+          </tr>
+          <% } %>
+
+          <% appointments.forEach(function(a) { %>
+          <tr>
+            <td>
+              <div class="d-flex align-items-center">
+                <div class="avatar-circle avatar-xs bg-primary-subtle text-primary me-2">
+                  <span><%= a.doctor_name.charAt(0) %></span>
+                </div>
+                <span class="small fw-semibold"><%= a.doctor_name %></span>
+              </div>
+            </td>
+            <td class="small text-muted"><%= a.specialty_name %></td>
+            <td class="small"><%= formatDate(a.appointment_date) %></td>
+            <td class="small"><%= formatTime(a.appointment_time) %></td>
+            <td>
+              <% let icon = 'clock'; 
+                 if (a.status === 'confirmed') icon='check-circle';
+                 else if (a.status === 'cancelled') icon='x-circle';
+                 else if (a.status === 'completed') icon='check2-all'; %>
+              <span class="status-badge status-badge-<%= a.status %>">
+                <i class="bi bi-<%= icon %> me-1"></i>
+                <%= a.status %>
+              </span>
+            </td>
+            <td class="text-end">
+              <a href="/appointments/<%= a.id %>/invoice"
+                class="btn btn-sm btn-outline-secondary rounded-pill me-1"
+                target="_blank">
+                Print
+              </a>
+              <% if (['pending','confirmed'].includes(a.status)) { %>
+              <form method="POST" action="/appointments/<%= a.id %>/cancel" class="d-inline"
+                    onsubmit="return confirm('Cancel this appointment?');">
+                <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill">
+                  Cancel
+                </button>
+              </form>
+              <% } %>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

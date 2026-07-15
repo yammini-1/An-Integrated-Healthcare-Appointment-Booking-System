@@ -1,0 +1,94 @@
+<%- include('partials/header', { activePage: 'testimonials' }) %>
+
+<h2 class="section-title mb-1">What our patients say</h2>
+<p class="small text-muted mb-4">
+  Real feedback from people who booked appointments through MediBook.
+</p>
+
+<div class="row g-3 g-md-4 mb-4">
+  <% if (!testimonials.length) { %>
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body text-center py-4 text-muted small">
+          No testimonials yet. Be the first to share your experience.
+        </div>
+      </div>
+    </div>
+  <% } %>
+
+  <% testimonials.forEach(function(t) { %>
+    <div class="col-md-6 col-lg-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body d-flex flex-column">
+          <div class="d-flex align-items-center mb-2">
+            <div class="avatar-circle avatar-xs bg-primary-subtle text-primary me-2">
+              <span><%= t.name.charAt(0) %></span>
+            </div>
+            <div>
+              <div class="small fw-semibold"><%= t.name %></div>
+              <div class="small text-warning">
+                <% for (let i = 1; i <= 5; i++) { %>
+                  <% if (i <= t.rating) { %>
+                    <i class="bi bi-star-fill"></i>
+                  <% } else { %>
+                    <i class="bi bi-star"></i>
+                  <% } %>
+                <% } %>
+              </div>
+            </div>
+          </div>
+          <p class="small text-muted flex-grow-1">"<%= t.message %>"</p>
+          <div class="small text-muted text-end">
+            <i class="bi bi-calendar2-week me-1"></i>
+            <%= t.created_at.toISOString().slice(0,10) %>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% }) %>
+</div>
+
+<% if (currentUser) { %>
+<div class="card border-0 shadow-sm">
+  <div class="card-body">
+    <h5 class="mb-2">Share your experience</h5>
+    <p class="small text-muted">
+      Your feedback helps other patients choose the right doctor.
+    </p>
+    <form method="POST" action="/testimonials">
+      <div class="mb-2">
+        <label class="form-label small">Rating</label>
+        <select name="rating" class="form-select form-select-sm rounded-3" style="max-width: 180px;">
+          <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+          <option value="4">⭐⭐⭐⭐ Very good</option>
+          <option value="3">⭐⭐⭐ Good</option>
+          <option value="2">⭐⭐ Fair</option>
+          <option value="1">⭐ Poor</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label small">Your feedback</label>
+        <textarea
+          name="message"
+          class="form-control rounded-3"
+          rows="3"
+          placeholder="How was your experience with the doctor, clinic and booking?"
+          required
+        ></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary btn-sm rounded-pill">
+        <i class="bi bi-send me-1"></i> Submit feedback
+      </button>
+    </form>
+  </div>
+</div>
+<% } else { %>
+<div class="card border-0 shadow-sm">
+  <div class="card-body small text-muted">
+    <i class="bi bi-info-circle me-1"></i>
+    Please <a href="/login">login</a> to share your experience.
+  </div>
+</div>
+<% } %>
+
+<%- include('partials/footer') %>

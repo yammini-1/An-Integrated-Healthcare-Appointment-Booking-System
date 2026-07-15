@@ -1,0 +1,45 @@
+<%- include('partials/header') %>
+
+<div class="row justify-content-center">
+  <div class="col-md-7 col-lg-6">
+    <div class="card border-0 shadow-sm auth-card">
+      <div class="card-body p-4 p-md-5">
+        <div class="text-center mb-4">
+          <div class="avatar-circle bg-success-subtle text-success mb-2">
+            <i class="bi bi-person-plus"></i>
+          </div>
+          <h4 class="mb-1">Create your account</h4>
+          <p class="small text-muted mb-0">Book and manage appointments with ease</p>
+        </div>
+
+        <form method="POST" action="/register">
+          <div class="mb-3">
+            <label class="form-label small">Full Name</label>
+            <input type="text" name="name" class="form-control rounded-3" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label small">Email</label>
+            <input type="email" name="email" class="form-control rounded-3" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label small">Password</label>
+            <input type="password" name="password" class="form-control rounded-3" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label small">Confirm Password</label>
+            <input type="password" name="confirmPassword" class="form-control rounded-3" required />
+          </div>
+          <button type="submit" class="btn btn-success w-100 rounded-pill mt-2">
+            <i class="bi bi-check2-circle me-1"></i> Sign Up
+          </button>
+        </form>
+
+        <p class="small text-center text-muted mt-3 mb-0">
+          Already have an account? <a href="/login" class="fw-semibold">Login</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,224 @@
+-- =========================================
+--  Full schema for MediBook (latest state)
+-- =========================================
+
+-- 1) Database create/select
+CREATE DATABASE IF NOT EXISTS clinic_app
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
+USE clinic_app;
+
+-- 2) (Optional) Reset: drop old tables
+--    Agar tum naya clean DB banana chahte ho,
+--    to neeche wali lines ke comment hata do.
+
+-- SET FOREIGN_KEY_CHECKS = 0;
+-- DROP TABLE IF EXISTS activity_logs;
+-- DROP TABLE IF EXISTS holidays;
+-- DROP TABLE IF EXISTS favorites;
+-- DROP TABLE IF EXISTS testimonials;
+-- DROP TABLE IF EXISTS appointments;
+-- DROP TABLE IF EXISTS doctors;
+-- DROP TABLE IF EXISTS specialties;
+-- DROP TABLE IF EXISTS users;
+-- SET FOREIGN_KEY_CHECKS = 1;
+
+-- =========================================
+-- TABLE: users
+-- =========================================
+CREATE TABLE IF NOT EXISTS users (
+  id                 INT AUTO_INCREMENT PRIMARY KEY,
+  name               VARCHAR(100) NOT NULL,
+  email              VARCHAR(100) NOT NULL UNIQUE,
+  password_hash      VARCHAR(255) NOT NULL,
+  role               ENUM('user','admin') NOT NULL DEFAULT 'user',
+  created_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  is_verified        TINYINT(1) NOT NULL DEFAULT 0,
+  verification_token VARCHAR(100) NULL,
+  verification_code  VARCHAR(6) NULL,
+  verification_expires DATETIME NULL
+) ENGINE=InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
+
+-- =========================================
+-- TABLE: specialties
+-- =========================================
+CREATE TABLE IF NOT EXISTS specialties (
+  id   INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL UNIQUE
+) ENGINE=InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
+
+-- =========================================
+-- TABLE: doctors
+-- =========================================
+CREATE TABLE IF NOT EXISTS doctors (
+  id               INT AUTO_INCREMENT PRIMARY KEY,
+  name             VARCHAR(100) NOT NULL,
+  email            VARCHAR(100) UNIQUE NULL,
+  password_hash    VARCHAR(255) NULL,
+  photo            VARCHAR(255) NULL,
+  specialty_id     INT NOT NULL,
+  bio              TEXT NULL,
+  experience_years INT DEFAULT 0,
+  fee              DECIMAL(10,2) DEFAULT 0,
+  available_from   TIME NOT NULL,
+  available_to     TIME NOT NULL,
+  is_active        TINYINT(1) NOT NULL DEFAULT 1,
+  CONSTRAINT fk_doctors_specialty
+    FOREIGN KEY (specialty_id)
+    REFERENCES specialties(id)
+    ON DELETE RESTRICT
+    ON UPDATE CASCADE
+) ENGINE=InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
+
+-- =========================================
+-- TABLE: appointments
+-- =========================================
+CREATE TABLE IF NOT EXISTS appointments (
+  id                INT AUTO_INCREMENT PRIMARY KEY,
+  user_id           INT NOT NULL,
+  doctor_id         INT NOT NULL,
+  appointment_date  DATE NOT NULL,
+  appointment_time  TIME NOT NULL,
+  status            ENUM('pending','confirmed','cancelled','completed') DEFAULT 'pending',
+  created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+  -- Payment related
+  payment_status    ENUM('pending','paid','failed','not_required') NOT NULL DEFAULT 'pending',
+  payment_order_id  VARCHAR(100) NULL,
+  payment_id        VARCHAR(100) NULL,
+  payment_amount    DECIMAL(10,2) NULL,
+
+  -- Doctor notes / prescription
+  doctor_notes      TEXT NULL,
+  prescription      TEXT NULL,
+
+  CONSTRAINT fk_appointments_user
+    FOREIGN KEY (user_id)
+    REFERENCES users(id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+
+  CONSTRAINT fk_appointments_doctor
+    FOREIGN KEY (doctor_id)
+    REFERENCES doctors(id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+
+  INDEX idx_appointments_user (user_id),
+  INDEX idx_appointments_doctor_date (doctor_id, appointment_date, appointment_time)
+) ENGINE=InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
+
+-- =========================================
+-- TABLE: testimonials
+-- =========================================
+CREATE TABLE IF NOT EXISTS testimonials (
+  id         INT AUTO_INCREMENT PRIMARY KEY,
+  user_id    INT NULL,
+  name       VARCHAR(100) NOT NULL,
+  message    TEXT NOT NULL,
+  rating     TINYINT UNSIGNED NOT NULL DEFAULT 5,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  is_approved TINYINT(1) NOT NULL DEFAULT 1,
+
+  CONSTRAINT fk_testimonials_user
+    FOREIGN KEY (user_id)
+    REFERENCES users(id)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE
+) ENGINE=InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
+
+-- =========================================
+-- TABLE: favorites (favourite doctors)
+-- =========================================
+CREATE TABLE IF NOT EXISTS favorites (
+  user_id    INT NOT NULL,
+  doctor_id  INT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (user_id, doctor_id),
+
+  CONSTRAINT fk_favorites_user
+    FOREIGN KEY (user_id)
+    REFERENCES users(id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+
+  CONSTRAINT fk_favorites_doctor
+    FOREIGN KEY (doctor_id)
+    REFERENCES doctors(id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+) ENGINE=InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
+
+-- =========================================
+-- TABLE: holidays (clinic closed days)
+-- =========================================
+CREATE TABLE IF NOT EXISTS holidays (
+  id           INT AUTO_INCREMENT PRIMARY KEY,
+  holiday_date DATE NOT NULL,
+  reason       VARCHAR(255) NULL,
+  created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uniq_holiday_date (holiday_date)
+) ENGINE=InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
+
+-- =========================================
+-- TABLE: activity_logs (audit trail)
+-- =========================================
+CREATE TABLE IF NOT EXISTS activity_logs (
+  id          INT AUTO_INCREMENT PRIMARY KEY,
+  actor_type  ENUM('admin','doctor','system') NOT NULL,
+  actor_id    INT NULL,
+  actor_name  VARCHAR(100) NULL,
+  action      VARCHAR(100) NOT NULL,
+  entity_type ENUM('patient','doctor','appointment','holiday','other') NULL,
+  entity_id   INT NULL,
+  description TEXT NULL,
+  created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
+
+-- =========================================
+-- SEED DATA: specialties
+-- =========================================
+INSERT INTO specialties (name) VALUES
+  ('General Physician'),
+  ('Gynecologist'),
+  ('Dermatologist'),
+  ('Pediatrician'),
+  ('Neurologist'),
+  ('Gastroenterologist'),
+  ('Orthopedic'),
+  ('Cardiologist')
+ON DUPLICATE KEY UPDATE name = VALUES(name);
+
+-- =========================================
+-- SEED DATA: sample doctors
+--   (password_hash/email can be NULL, admin panel se set karoge)
+-- =========================================
+INSERT INTO doctors (name, email, specialty_id, bio, experience_years, fee, available_from, available_to) VALUES
+  ('Dr. Anil Sharma',   'anil.sharma@example.com',   1, 'Experienced general physician focused on preventive care.', 10, 500.00, '09:00:00', '13:00:00'),
+  ('Dr. Meera Kapoor',  'meera.kapoor@example.com',  1, 'Family physician with interest in lifestyle medicine.',    7,  450.00, '14:00:00', '18:00:00'),
+  ('Dr. Priya Singh',   'priya.singh@example.com',   2, 'Gynecologist specializing in high-risk pregnancies.',      12, 800.00, '10:00:00', '15:00:00'),
+  ('Dr. Ritu Nair',     'ritu.nair@example.com',     3, 'Dermatologist focusing on acne and cosmetic procedures.',  8,  600.00, '11:00:00', '16:00:00'),
+  ('Dr. Rahul Verma',   'rahul.verma@example.com',   4, 'Pediatrician for newborn to adolescent care.',             9,  550.00, '09:30:00', '13:30:00'),
+  ('Dr. Neha Bhat',     'neha.bhat@example.com',     5, 'Neurologist treating migraine and epilepsy.',              11, 900.00, '15:00:00', '19:00:00'),
+  ('Dr. Arjun Desai',   'arjun.desai@example.com',   6, 'Gastroenterologist for liver and GI disorders.',           10, 850.00, '10:30:00', '14:30:00'),
+  ('Dr. Karan Malhotra','karan.malhotra@example.com',8, 'Cardiologist focusing on preventive cardiology.',          15, 1000.00,'09:00:00', '12:30:00')
+ON DUPLICATE KEY UPDATE
+  email = VALUES(email),
+  specialty_id = VALUES(specialty_id);

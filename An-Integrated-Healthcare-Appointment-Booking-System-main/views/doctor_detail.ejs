@@ -1,0 +1,76 @@
+<%- include('partials/header', { activePage: 'doctors' }) %>
+
+<div class="row g-4">
+  <div class="col-md-8">
+    <div class="card border-0 shadow-sm mb-3">
+      <div class="card-body">
+        <div class="d-flex align-items-center mb-3">
+          <div class="avatar-wrapper me-3">
+            <% if (doctor.photo) { %>
+              <div class="avatar-circle avatar-lg">
+                <img src="/uploads/doctors/<%= doctor.photo %>" alt="<%= doctor.name %>" class="avatar-img">
+              </div>
+            <% } else { %>
+              <div class="avatar-circle avatar-lg bg-primary-subtle text-primary">
+                <span><%= doctor.name.charAt(0) %></span>
+              </div>
+            <% } %>
+          </div>
+          <div>
+            <h3 class="mb-1"><%= doctor.name %></h3>
+            <div class="small text-muted mb-1"><%= doctor.specialty_name %></div>
+            <div class="small text-muted">
+              <i class="bi bi-briefcase me-1"></i>
+              <strong><%= doctor.experience_years %> years</strong> experience
+            </div>
+          </div>
+        </div>
+        <hr />
+        <h6 class="fw-semibold mb-2">About</h6>
+        <p class="small text-muted mb-0">
+          <%= doctor.bio || 'No detailed description provided for this doctor yet.' %>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+        <h6 class="fw-semibold mb-3">Consultation Details</h6>
+        <p class="small mb-2">
+          <span class="text-muted d-block">Consultation Fee</span>
+          <span class="fw-semibold fs-6">₹<%= doctor.fee %></span>
+        </p>
+        <p class="small mb-2">
+          <span class="text-muted d-block">Availability</span>
+          <span class="fw-semibold">
+            <%= doctor.available_from.toString().slice(0,5) %> – <%= doctor.available_to.toString().slice(0,5) %>
+          </span>
+        </p>
+        <p class="small text-muted mb-4">
+          <i class="bi bi-info-circle me-1"></i>
+          Actual appointment time depends on final confirmation from the clinic.
+        </p>
+                <a href="/doctors/<%= doctor.id %>/book" class="btn btn-primary w-100 rounded-pill mb-2">
+          <i class="bi bi-calendar-plus me-1"></i> Book Appointment
+        </a>
+
+        <% if (currentUser) { %>
+        <form method="POST" action="/doctors/<%= doctor.id %>/<%= isFavorite ? 'unfavorite' : 'favorite' %>" class="d-grid mb-2">
+          <button type="submit" class="btn btn-outline-danger w-100 rounded-pill">
+            <i class="bi <%= isFavorite ? 'bi-heart-fill' : 'bi-heart' %> me-1"></i>
+            <%= isFavorite ? 'Remove from favourites' : 'Add to favourites' %>
+          </button>
+        </form>
+        <% } %>
+
+        <a href="/doctors" class="btn btn-outline-secondary w-100 rounded-pill">
+          Back to Doctors
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

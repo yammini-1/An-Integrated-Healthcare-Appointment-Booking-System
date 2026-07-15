@@ -1,0 +1,88 @@
+<%- include('partials/header', { activePage: 'admin-logs' }) %>
+
+<h2 class="section-title mb-3">Activity Logs</h2>
+<p class="small text-muted mb-3">
+  Recent actions by admins and doctors. Latest 200 entries.
+</p>
+
+<form method="GET" class="row g-2 g-md-3 align-items-end mb-3">
+  <div class="col-md-3">
+    <label class="form-label small">Actor Type</label>
+    <select name="actor_type" class="form-select form-select-sm rounded-3">
+      <option value="">All</option>
+      <option value="admin"  <%= filters.actor_type==='admin'  ? 'selected' : '' %>>Admin</option>
+      <option value="doctor" <%= filters.actor_type==='doctor' ? 'selected' : '' %>>Doctor</option>
+      <option value="system" <%= filters.actor_type==='system' ? 'selected' : '' %>>System</option>
+    </select>
+  </div>
+  <div class="col-md-3">
+    <label class="form-label small">Entity Type</label>
+    <select name="entity_type" class="form-select form-select-sm rounded-3">
+      <option value="">All</option>
+      <option value="patient"     <%= filters.entity_type==='patient'     ? 'selected' : '' %>>Patient</option>
+      <option value="doctor"      <%= filters.entity_type==='doctor'      ? 'selected' : '' %>>Doctor</option>
+      <option value="appointment" <%= filters.entity_type==='appointment' ? 'selected' : '' %>>Appointment</option>
+      <option value="holiday"     <%= filters.entity_type==='holiday'     ? 'selected' : '' %>>Holiday</option>
+      <option value="other"       <%= filters.entity_type==='other'       ? 'selected' : '' %>>Other</option>
+    </select>
+  </div>
+  <div class="col-md-4">
+    <label class="form-label small">Search</label>
+    <input
+      type="text"
+      name="q"
+      value="<%= filters.q %>"
+      class="form-control form-control-sm rounded-3"
+      placeholder="Actor name, action, description"
+    />
+  </div>
+  <div class="col-md-2 d-grid">
+    <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill">
+      Filter
+    </button>
+  </div>
+</form>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover app-table mb-0">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Actor</th>
+            <th>Action</th>
+            <th>Entity</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (!logs.length) { %>
+          <tr>
+            <td colspan="5" class="text-center py-4 small text-muted">No logs.</td>
+          </tr>
+          <% } %>
+          <% logs.forEach(function(l) { %>
+          <tr>
+            <td class="small"><%= formatDate(l.created_at) %> <span class="text-muted"><%= formatTime(l.created_at) %></span></td>
+            <td class="small">
+              <strong><%= l.actor_name || '-' %></strong>
+              <span class="badge bg-light text-dark ms-1"><%= l.actor_type %></span>
+            </td>
+            <td class="small"><%= l.action %></td>
+            <td class="small">
+              <%= l.entity_type || '-' %>
+              <% if (l.entity_id) { %>
+                (#<%= l.entity_id %>)
+              <% } %>
+            </td>
+            <td class="small text-muted"><%= l.description || '' %></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

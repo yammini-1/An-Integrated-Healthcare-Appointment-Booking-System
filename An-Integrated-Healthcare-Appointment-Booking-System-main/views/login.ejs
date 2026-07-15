@@ -1,0 +1,42 @@
+<%- include('partials/header') %>
+
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-5">
+    <div class="card border-0 shadow-sm auth-card">
+      <div class="card-body p-4 p-md-5">
+        <div class="text-center mb-4">
+          <div class="avatar-circle bg-primary-subtle text-primary mb-2">
+            <i class="bi bi-person-check"></i>
+          </div>
+          <h4 class="mb-1">Welcome back</h4>
+          <p class="small text-muted mb-0">Login to manage your appointments</p>
+        </div>
+
+        <form method="POST" action="/login" class="needs-validation" novalidate>
+          <div class="mb-3">
+            <label class="form-label small">Email</label>
+            <input type="email" name="email" class="form-control rounded-3" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label small">Password</label>
+            <input type="password" name="password" class="form-control rounded-3" required />
+          </div>
+
+          <div class="d-flex justify-content-end mb-2">
+            <a href="/forgot-password" class="small">Forgot password?</a>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100 rounded-pill mt-1">
+            <i class="bi bi-box-arrow-in-right me-1"></i> Login
+          </button>
+        </form>
+
+        <p class="small text-center text-muted mt-3 mb-0">
+          New here? <a href="/register" class="fw-semibold">Create an account</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

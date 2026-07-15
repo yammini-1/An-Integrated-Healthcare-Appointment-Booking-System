@@ -1,0 +1,81 @@
+<%- include('partials/header', { activePage: 'admin-doctors' }) %>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h2 class="section-title mb-1">Manage Doctors</h2>
+    <p class="small text-muted mb-0">Add and update doctor profiles and see performance.</p>
+  </div>
+    <a href="/admin/doctors/export" class="btn btn-sm btn-outline-success rounded-pill me-2">
+    <i class="bi bi-file-earmark-spreadsheet me-1"></i> Export CSV
+  </a>
+  <a href="/admin/doctors/new" class="btn btn-primary rounded-pill">
+    <i class="bi bi-plus-lg me-1"></i> Add Doctor
+  </a>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover app-table mb-0">
+        <thead>
+          <tr>
+            <th>Doctor</th>
+            <th>Specialty</th>
+            <th>Experience</th>
+            <th>Fee</th>
+            <th>Availability</th>
+            <th>Performance</th>
+            <th class="text-end">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (!doctors.length) { %>
+          <tr>
+            <td colspan="7" class="text-center py-4 text-muted">No doctors added yet.</td>
+          </tr>
+          <% } %>
+
+          <% doctors.forEach(function(d) { %>
+          <tr>
+            <td>
+              <div class="d-flex align-items-center">
+                <div class="avatar-wrapper me-2">
+                  <% if (d.photo) { %>
+                    <div class="avatar-circle avatar-xs">
+                      <img src="/uploads/doctors/<%= d.photo %>" alt="<%= d.name %>" class="avatar-img">
+                    </div>
+                  <% } else { %>
+                    <div class="avatar-circle avatar-xs bg-primary-subtle text-primary">
+                      <span><%= d.name.charAt(0) %></span>
+                    </div>
+                  <% } %>
+                </div>
+                <span class="small fw-semibold"><%= d.name %></span>
+              </div>
+            </td>
+            <td class="small text-muted"><%= d.specialty_name %></td>
+            <td class="small"><%= d.experience_years %> yrs</td>
+            <td class="small">₹<%= d.fee %></td>
+            <td class="small">
+              <%= d.available_from.toString().slice(0,5) %> – <%= d.available_to.toString().slice(0,5) %>
+            </td>
+            <td class="small">
+              <div>Total: <strong><%= d.total_appointments %></strong></div>
+              <div class="text-success">Completed: <strong><%= d.completed_appointments %></strong></div>
+              <div class="text-danger">Cancelled: <strong><%= d.cancelled_appointments %></strong></div>
+              <div class="text-info">Upcoming: <strong><%= d.upcoming_appointments %></strong></div>
+            </td>
+            <td class="text-end">
+              <a href="/admin/doctors/<%= d.id %>/edit" class="btn btn-sm btn-outline-primary rounded-pill">
+                Edit
+              </a>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

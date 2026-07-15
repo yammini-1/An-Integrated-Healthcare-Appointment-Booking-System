@@ -1,0 +1,44 @@
+<%- include('partials/header') %>
+
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-5">
+    <div class="card border-0 shadow-sm auth-card">
+      <div class="card-body p-4 p-md-5">
+        <div class="text-center mb-4">
+          <div class="avatar-circle bg-primary-subtle text-primary mb-2">
+            <i class="bi bi-envelope-check"></i>
+          </div>
+          <h4 class="mb-1">Verify your email</h4>
+          <p class="small text-muted mb-0">
+            We have sent a 6-digit code to <strong><%= email %></strong>
+          </p>
+        </div>
+
+        <form method="POST" action="/verify-email-code">
+          <div class="mb-3">
+            <label class="form-label small">Verification Code</label>
+            <input
+            type="text"
+            name="code"
+            class="form-control rounded-3"
+            maxlength="6"
+            pattern="[0-9]{6}"
+            inputmode="numeric"
+            placeholder="Enter 6-digit code"
+            required
+            />
+          </div>
+          <button type="submit" class="btn btn-primary w-100 rounded-pill mt-2">
+            Verify
+          </button>
+        </form>
+
+        <p class="small text-muted mt-3 mb-0">
+          Code valid for 15 minutes. If you did not receive the code, check your spam folder.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>
